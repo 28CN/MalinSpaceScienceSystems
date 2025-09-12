@@ -1,0 +1,130 @@
+﻿<Window x:Class="AstroClient.Wpf.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:res="clr-namespace:AstroClient.Wpf.Resources"
+        Title="Astronomical Processing"
+        Height="300" Width="450"
+        Background="{DynamicResource Background}">
+
+    <DockPanel>
+        <!-- Status bar at bottom -->
+        <StatusBar DockPanel.Dock="Bottom" Background="{DynamicResource PanelBackground}">
+            <!-- bind to VM StatusMessage -->
+            <TextBlock Text="{Binding StatusMessage}" Foreground="{DynamicResource TextBrush}" />
+        </StatusBar>
+
+        <!-- Main layout with two columns -->
+        <Grid Background="{DynamicResource PanelBackground}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <!-- Main content -->
+                <ColumnDefinition Width="150" />
+                <!-- Right side menu -->
+            </Grid.ColumnDefinitions>
+
+            <!-- TabControl with four pages -->
+            <TabControl Grid.Column="0" Margin="5">
+                <!-- Velocity Tab -->
+                <TabItem Header="{x:Static res:Strings.Velocity}">
+                    <StackPanel Margin="10">
+                        <TextBlock Text="{x:Static res:Strings.ObservedWavelength}" />
+                        <TextBox Width="120" Margin="0,0,0,8"/>
+                        <TextBlock Text="{x:Static res:Strings.RestWavelength}" />
+                        <TextBox Width="120" Margin="0,0,0,8"/>
+                        <Button Content="{x:Static res:Strings.Compute}" Width="140"
+                                Command="{Binding VelocityCommand}"/>
+                        <TextBlock Text="{x:Static res:Strings.Result}" FontWeight="Bold" Margin="0,10,0,0"/>
+                        <TextBlock FontWeight="Bold" Text="{Binding VelocityResult}"/>
+                    </StackPanel>
+                </TabItem>
+
+                <!-- Distance Tab -->
+                <TabItem Header="{x:Static res:Strings.Distance}">
+                    <StackPanel Margin="10">
+                        <TextBlock Text="{x:Static res:Strings.ParallaxArcseconds}" />
+                        <TextBox Width="120" Margin="0,0,0,8"/>
+                        <Button Content="{x:Static res:Strings.Compute}" Width="140"
+                                Command="{Binding DistanceCommand}"/>
+                        <TextBlock Text="{x:Static res:Strings.Result}" FontWeight="Bold" Margin="0,10,0,0"/>
+                        <TextBlock FontWeight="Bold" Text="{Binding DistanceResult}"/>
+                    </StackPanel>
+                </TabItem>
+
+                <!-- Kelvin Tab -->
+                <TabItem Header="{x:Static res:Strings.Kelvin}">
+                    <StackPanel Margin="10">
+                        <TextBlock Text="{x:Static res:Strings.Celsius}" />
+                        <TextBox Width="120" Margin="0,0,0,8"/>
+                        <Button Content="{x:Static res:Strings.Compute}" Width="140"
+                                Command="{Binding KelvinCommand}"/>
+                        <TextBlock Text="{x:Static res:Strings.Result}" FontWeight="Bold" Margin="0,10,0,0"/>
+                        <TextBlock FontWeight="Bold" Text="{Binding KelvinResult}"/>
+                    </StackPanel>
+                </TabItem>
+
+                <!-- Event Horizon Tab -->
+                <TabItem Header="{x:Static res:Strings.EventHorizon}">
+                    <StackPanel Margin="10">
+                        <TextBlock Text="{x:Static res:Strings.MassKg}" />
+                        <TextBox Width="120" Margin="0,0,0,8"/>
+                        <Button Content="{x:Static res:Strings.Compute}" Width="140"
+                                Command="{Binding EventHorizonCommand}"/>
+                        <TextBlock Text="{x:Static res:Strings.Result}" FontWeight="Bold" Margin="0,10,0,0"/>
+                        <TextBlock FontWeight="Bold" Text="{Binding RadiusResult}"/>
+                    </StackPanel>
+                </TabItem>
+            </TabControl>
+
+            <!-- Right side narrow menu -->
+            <StackPanel Grid.Column="1" Margin="5" VerticalAlignment="Top">
+
+                <!-- Language -->
+                <TextBlock Text="{x:Static res:Strings.Language}" FontWeight="Bold" />
+                <ComboBox Width="120" Margin="0,0,0,10"
+                          SelectedValue="{Binding SelectedLanguage, Mode=TwoWay}"
+                          SelectedValuePath="Tag">
+                    <ComboBoxItem IsSelected="True" Content="English"  Tag="en-GB"/>
+                    <ComboBoxItem                 Content="Français" Tag="fr-FR"/>
+                    <ComboBoxItem                 Content="Deutsch"  Tag="de-DE"/>
+                </ComboBox>
+
+                <!-- Theme -->
+                <TextBlock Text="{x:Static res:Strings.Theme}" FontWeight="Bold" />
+                <ComboBox Width="120" Margin="0,0,0,10"
+                          SelectedValue="{Binding SelectedTheme, Mode=TwoWay}"
+                          SelectedValuePath="Tag">
+                    <ComboBoxItem IsSelected="True" Content="Light" Tag="light"/>
+                    <ComboBoxItem                 Content="Dark"  Tag="dark"/>
+                </ComboBox>
+
+                <!-- Font Family -->
+                <TextBlock Text="{x:Static res:Strings.FontFamily}" FontWeight="Bold" />
+                <ComboBox Width="120" Margin="0,0,0,10"
+                          SelectedValue="{Binding SelectedFontFamily, Mode=TwoWay}"
+                          SelectedValuePath="Content">
+                    <ComboBoxItem Content="Segoe UI"/>
+                    <ComboBoxItem Content="Arial" IsSelected="True"/>
+                    <ComboBoxItem Content="Consolas"/>
+                    <ComboBoxItem Content="Times New Roman"/>
+                </ComboBox>
+
+                <!-- Font Size -->
+                <TextBlock Text="{x:Static res:Strings.FontSize}" FontWeight="Bold" />
+                <TextBox Width="120" Margin="0,0,0,10"
+                         Text="{Binding SelectedFontSize, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
+                <!-- Background Color -->
+                <TextBlock Text="{x:Static res:Strings.BackgroundColor}" FontWeight="Bold" />
+                <ComboBox Width="120" Margin="0,0,0,10"
+                          SelectedValue="{Binding SelectedBackgroundColor, Mode=TwoWay}"
+                          SelectedValuePath="Content">
+                    <ComboBoxItem Content="Default" IsSelected="True"/>
+                    <ComboBoxItem Content="Blue"/>
+                    <ComboBoxItem Content="Green"/>
+                    <ComboBoxItem Content="Red"/>
+                </ComboBox>
+
+            </StackPanel>
+        </Grid>
+    </DockPanel>
+</Window>
