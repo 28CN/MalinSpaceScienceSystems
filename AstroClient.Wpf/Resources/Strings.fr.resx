@@ -147,6 +147,12 @@
   <data name="BackgroundColor" xml:space="preserve">
     <value>Couleur d’arrière-plan</value>
   </data>
+  <data name="StatusReady" xml:space="preserve">
+    <value>État : Prêt</value>
+  </data>
+  <data name="MassKg" xml:space="preserve">
+    <value>Masse (kg) :</value>
+  </data>
   <data name="ObservedWavelength" xml:space="preserve">
     <value>Longueur d’onde observée :</value>
   </data>
@@ -156,16 +162,10 @@
   <data name="ParallaxArcseconds" xml:space="preserve">
     <value>Parallaxe (secondes d’arc) :</value>
   </data>
-  <data name="Celsius" xml:space="preserve">
-    <value>Celsius :</value>
-  </data>
-  <data name="MassKg" xml:space="preserve">
-    <value>Masse (kg) :</value>
-  </data>
   <data name="Result" xml:space="preserve">
     <value>Résultat :</value>
   </data>
-  <data name="StatusReady" xml:space="preserve">
-    <value>État : Prêt</value>
+  <data name="Celsius" xml:space="preserve">
+    <value>Celsius :</value>
   </data>
 </root>

@@ -13,30 +13,29 @@ namespace AstroClient.Wpf.Services
     {
         private readonly HttpClient _http;
 
-        // TODO: Set to your Swagger "https" port when running.
-        private const string BASE = "https://localhost:7183";
+        // use swagger https port
+        private const string BASE = "https://localhost:7120";
 
         public AstroApiClient()
         {
             _http = new HttpClient { BaseAddress = new Uri(BASE) };
         }
 
-        public Task<VelocityResponse?> PostVelocityAsync(VelocityRequest body)
-            => _http.PostAsJsonAsync("/api/astro/velocity", body).Result.Content.ReadFromJsonAsync<VelocityResponse>();
+        //public Task<VelocityResponse?> PostVelocityAsync(VelocityRequest body)
+        //    => _http.PostAsJsonAsync("/api/astro/velocity", body).Result.Content.ReadFromJsonAsync<VelocityResponse>();
 
-        public Task<DistanceResponse?> PostDistanceAsync(DistanceRequest body)
-            => _http.PostAsJsonAsync("/api/astro/distance", body).Result.Content.ReadFromJsonAsync<DistanceResponse>();
+        //public Task<DistanceResponse?> PostDistanceAsync(DistanceRequest body)
+        //    => _http.PostAsJsonAsync("/api/astro/distance", body).Result.Content.ReadFromJsonAsync<DistanceResponse>();
 
-        public Task<KelvinResponse?> PostKelvinAsync(KelvinRequest body)
-            => _http.PostAsJsonAsync("/api/astro/kelvin", body).Result.Content.ReadFromJsonAsync<KelvinResponse>();
+        //public Task<KelvinResponse?> PostKelvinAsync(KelvinRequest body)
+        //    => _http.PostAsJsonAsync("/api/astro/kelvin", body).Result.Content.ReadFromJsonAsync<KelvinResponse>();
 
-        public Task<EventHorizonResponse?> PostEventHorizonAsync(EventHorizonRequest body)
-            => _http.PostAsJsonAsync("/api/astro/event-horizon", body).Result.Content.ReadFromJsonAsync<EventHorizonResponse>();
+        //public Task<EventHorizonResponse?> PostEventHorizonAsync(EventHorizonRequest body)
+        //    => _http.PostAsJsonAsync("/api/astro/event-horizon", body).Result.Content.ReadFromJsonAsync<EventHorizonResponse>();
 
         // POST JSON and read double result (async)
         private async Task<double> PostAndReadDoubleAsync<TRequest>(string url, TRequest request, CancellationToken ct = default)
         {
-            // NOTE: ensure BaseAddress is https://localhost:7120/  (see constructor or wherever you set it)
             using var resp = await _http.PostAsJsonAsync(url, request, ct); // async post
             if (!resp.IsSuccessStatusCode)
             {
@@ -56,31 +55,40 @@ namespace AstroClient.Wpf.Services
             return result.Value; // keep as double; VM will format .ToString("E6")
         }
 
-        // async version
-        public Task<double> ComputeVelocityAsync(Astro.Contracts.Dtos.VelocityRequest request, CancellationToken ct = default)
-            => PostAndReadDoubleAsync("api/astro/velocity", request, ct);
+        // async 
+        public async Task<double> ComputeVelocityAsync(VelocityRequest request, CancellationToken ct = default)
+        {
+            using var resp = await _http.PostAsJsonAsync("api/astro/velocity", request, ct);
+            resp.EnsureSuccessStatusCode();
+            var payload = await resp.Content.ReadFromJsonAsync<VelocityResponse>(cancellationToken: ct);
+            if (payload == null) throw new HttpRequestException("Empty response.");
+            return payload.VelocityMps;
+        }
+        public async Task<double> ComputeDistanceAsync(DistanceRequest request, CancellationToken ct = default)
+        {
+            using var resp = await _http.PostAsJsonAsync("api/astro/distance", request, ct);
+            resp.EnsureSuccessStatusCode();
+            var payload = await resp.Content.ReadFromJsonAsync<DistanceResponse>(cancellationToken: ct);
+            if (payload == null) throw new HttpRequestException("Empty response.");
+            return payload.DistanceParsec;
+        }
 
-        // temporary sync wrapper (keep UI working now; will be removed after VM becomes async)
-        public double ComputeVelocity(Astro.Contracts.Dtos.VelocityRequest request)
-            => ComputeVelocityAsync(request).GetAwaiter().GetResult();
+        public async Task<double> ComputeKelvinAsync(KelvinRequest request, CancellationToken ct = default)
+        {
+            using var resp = await _http.PostAsJsonAsync("api/astro/kelvin", request, ct);
+            resp.EnsureSuccessStatusCode();
+            var payload = await resp.Content.ReadFromJsonAsync<KelvinResponse>(cancellationToken: ct);
+            if (payload == null) throw new HttpRequestException("Empty response.");
+            return payload.Kelvin;
+        }
 
-        public Task<double> ComputeDistanceAsync(Astro.Contracts.Dtos.DistanceRequest request, CancellationToken ct = default)
-    => PostAndReadDoubleAsync("api/astro/distance", request, ct);
-
-        public double ComputeDistance(Astro.Contracts.Dtos.DistanceRequest request)
-            => ComputeDistanceAsync(request).GetAwaiter().GetResult();
-
-        public Task<double> ComputeKelvinAsync(Astro.Contracts.Dtos.KelvinRequest request, CancellationToken ct = default)
-    => PostAndReadDoubleAsync("api/astro/kelvin", request, ct);
-
-        public double ComputeKelvin(Astro.Contracts.Dtos.KelvinRequest request)
-            => ComputeKelvinAsync(request).GetAwaiter().GetResult();
-
-        public Task<double> ComputeEventHorizonRadiusAsync(Astro.Contracts.Dtos.EventHorizonRequest request, CancellationToken ct = default)
-    => PostAndReadDoubleAsync("api/astro/event-horizon", request, ct);
-
-        public double ComputeEventHorizonRadius(Astro.Contracts.Dtos.EventHorizonRequest request)
-            => ComputeEventHorizonRadiusAsync(request).GetAwaiter().GetResult();
-
+        public async Task<double> ComputeEventHorizonRadiusAsync(EventHorizonRequest request, CancellationToken ct = default)
+        {
+            using var resp = await _http.PostAsJsonAsync("api/astro/event-horizon", request, ct);
+            resp.EnsureSuccessStatusCode();
+            var payload = await resp.Content.ReadFromJsonAsync<EventHorizonResponse>(cancellationToken: ct);
+            if (payload == null) throw new HttpRequestException("Empty response.");
+            return payload.RadiusMeters;
+        }
     }
 }

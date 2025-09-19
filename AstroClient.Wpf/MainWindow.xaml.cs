@@ -1,4 +1,7 @@
 ﻿using AstroClient.Wpf.ViewModels;
+using AstroClient.Wpf.Services;
+using Astro.Contracts.Dtos;
+using System.Globalization;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -9,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+
 
 namespace AstroClient.Wpf
 {
@@ -42,25 +46,47 @@ namespace AstroClient.Wpf
                 if (e.PropertyName == nameof(MainViewModel.SelectedBackgroundColor))
                 {
                     var name = (vm.SelectedBackgroundColor ?? "Default").ToLowerInvariant();
-                    // Remove override to use theme default
+
                     if (name == "default")
                     {
                         if (Application.Current.Resources.Contains("Background"))
                             Application.Current.Resources.Remove("Background");
+                        if (Application.Current.Resources.Contains("PanelBackground"))
+                            Application.Current.Resources.Remove("PanelBackground");
                     }
                     else
                     {
-                        Color c = name switch
+                        (Color bg, Color panel) = name switch
                         {
-                            "blue" => Colors.SteelBlue,
-                            "green" => Colors.SeaGreen,
-                            "red" => Colors.IndianRed,
-                            _ => Colors.Transparent // should not happen
+                            "blue" => (Color.FromRgb(0xE9, 0xF2, 0xFF), Color.FromRgb(0xF7, 0xFB, 0xFF)),
+                            "green" => (Color.FromRgb(0xEC, 0xF7, 0xEF), Color.FromRgb(0xF7, 0xFC, 0xF8)),
+                            "red" => (Color.FromRgb(0xFF, 0xEF, 0xF0), Color.FromRgb(0xFF, 0xF8, 0xF8)),
+                            _ => (Colors.Transparent, Colors.Transparent)
                         };
-                        Application.Current.Resources["Background"] = new SolidColorBrush(c);
+
+                        Application.Current.Resources["Background"] = new SolidColorBrush(bg);
+                        Application.Current.Resources["PanelBackground"] = new SolidColorBrush(panel);
                     }
                 }
+
+                // Font family change
+                if (e.PropertyName == nameof(MainViewModel.SelectedFontFamily))
+                {
+                    Application.Current.Resources["AppFontFamily"] = new FontFamily(vm.SelectedFontFamily ?? "Segoe UI");
+                }
+
+                // Font size change
+                if (e.PropertyName == nameof(MainViewModel.SelectedFontSize))
+                {
+                    Application.Current.Resources["AppFontSize"] = vm.SelectedFontSize <= 0 ? 12.0 : vm.SelectedFontSize;
+                }
             };
+        }
+
+        private void RootGrid_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            // move focus to grid so any TextBox loses focus
+            RootGrid.Focus();
         }
     }
 }

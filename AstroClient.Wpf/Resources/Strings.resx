@@ -147,6 +147,12 @@
   <data name="BackgroundColor" xml:space="preserve">
     <value>Background Color</value>
   </data>
+  <data name="StatusReady" xml:space="preserve">
+    <value>Status: Ready</value>
+  </data>
+  <data name="MassKg" xml:space="preserve">
+    <value>Mass (kg):</value>
+  </data>
   <data name="ObservedWavelength" xml:space="preserve">
     <value>Observed Wavelength:</value>
   </data>
@@ -156,16 +162,10 @@
   <data name="ParallaxArcseconds" xml:space="preserve">
     <value>Parallax Arcseconds:</value>
   </data>
-  <data name="Celsius" xml:space="preserve">
-    <value>Celsius:</value>
-  </data>
-  <data name="MassKg" xml:space="preserve">
-    <value>Mass (kg):</value>
-  </data>
   <data name="Result" xml:space="preserve">
     <value>Result:</value>
   </data>
-  <data name="StatusReady" xml:space="preserve">
-    <value>Status: Ready</value>
+  <data name="Celsius" xml:space="preserve">
+    <value>Celsius:</value>
   </data>
 </root>

@@ -15,7 +15,7 @@ namespace AstroClient.Wpf.ViewModels
 {
     public sealed class MainViewModel : INotifyPropertyChanged
     {
-        private readonly AstroApiClient _api = new();
+        private readonly AstroApiClient _api = new AstroApiClient(); 
 
         // Velocity
         public double? ObservedWavelength { get; set; }
@@ -66,14 +66,12 @@ namespace AstroClient.Wpf.ViewModels
                 if (ObservedWavelength is null || RestWavelength is null)
                     throw new ArgumentException("Inputs required.");
 
-                var res = await _api.PostVelocityAsync(new VelocityRequest
+                var value = await _api.ComputeVelocityAsync(new VelocityRequest
                 {
                     ObservedWavelength = ObservedWavelength.Value,
                     RestWavelength = RestWavelength.Value
                 });
-
-                if (res is null) throw new HttpRequestException("Empty response.");
-                VelocityResult = ToE6(res.VelocityMps);
+                VelocityResult = ToE6(value);
                 SetOk();
             }
             catch (Exception ex)
@@ -90,13 +88,11 @@ namespace AstroClient.Wpf.ViewModels
                 if (ParallaxArcseconds is null)
                     throw new ArgumentException("Input required.");
 
-                var res = await _api.PostDistanceAsync(new DistanceRequest
+                var value = await _api.ComputeDistanceAsync(new DistanceRequest
                 {
                     ParallaxArcseconds = ParallaxArcseconds.Value
                 });
-
-                if (res is null) throw new HttpRequestException("Empty response.");
-                DistanceResult = ToE6(res.DistanceParsec);
+                DistanceResult = ToE6(value);
                 SetOk();
             }
             catch (Exception ex)
@@ -113,13 +109,11 @@ namespace AstroClient.Wpf.ViewModels
                 if (Celsius is null)
                     throw new ArgumentException("Input required.");
 
-                var res = await _api.PostKelvinAsync(new KelvinRequest
+                var value = await _api.ComputeKelvinAsync(new KelvinRequest
                 {
                     Celsius = Celsius.Value
                 });
-
-                if (res is null) throw new HttpRequestException("Empty response.");
-                KelvinResult = ToE6(res.Kelvin);
+                KelvinResult = ToE6(value);
                 SetOk();
             }
             catch (Exception ex)
@@ -136,13 +130,11 @@ namespace AstroClient.Wpf.ViewModels
                 if (MassKg is null)
                     throw new ArgumentException("Input required.");
 
-                var res = await _api.PostEventHorizonAsync(new EventHorizonRequest
+                var value = await _api.ComputeEventHorizonRadiusAsync(new EventHorizonRequest
                 {
                     MassKg = MassKg.Value
                 });
-
-                if (res is null) throw new HttpRequestException("Empty response.");
-                RadiusResult = ToE6(res.RadiusMeters);
+                RadiusResult = ToE6(value);
                 SetOk();
             }
             catch (Exception ex)
@@ -181,7 +173,13 @@ namespace AstroClient.Wpf.ViewModels
         public double SelectedFontSize
         {
             get => _selectedFontSize;
-            set { _selectedFontSize = value; OnPropertyChanged(); }
+            set
+            {
+                var clamped = Math.Max(10, Math.Min(36, value));
+                if (Math.Abs(_selectedFontSize - clamped) < 0.1) return;
+                _selectedFontSize = clamped;
+                OnPropertyChanged();
+            }
         }
 
         private string _selectedBackgroundColor = "Default";

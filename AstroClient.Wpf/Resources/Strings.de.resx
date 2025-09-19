@@ -147,47 +147,25 @@
   <data name="BackgroundColor" xml:space="preserve">
     <value>Hintergrundfarbe</value>
   </data>
-  <data name="ObservedWavelength" xml:space="preserve">
-    <value />
-  </data>
-  <data name="RestWavelength" xml:space="preserve">
-    <value />
-  </data>
-  <data name="ParallaxArcseconds" xml:space="preserve">
-    <value />
-  </data>
-  <data name="Celsius" xml:space="preserve">
-    <value />
+  <data name="StatusReady" xml:space="preserve">
+    <value>Status: Bereit</value>
   </data>
   <data name="MassKg" xml:space="preserve">
-    <value />
+    <value>Masse (kg):</value>
+  </data>
+  <data name="ObservedWavelength" xml:space="preserve">
+    <value>Beobachtete Wellenlänge:</value>
+  </data>
+  <data name="RestWavelength" xml:space="preserve">
+    <value>Ruhewellenlänge:</value>
+  </data>
+  <data name="ParallaxArcseconds" xml:space="preserve">
+    <value>Parallaxe (Bogensekunden):</value>
   </data>
   <data name="Result" xml:space="preserve">
-    <value />
+    <value>Ergebnis:</value>
   </data>
-  <data name="StatusReady" xml:space="preserve">
-    <value />
+  <data name="Celsius" xml:space="preserve">
+    <value>Celsius:</value>
   </data>
-	<data name="ObservedWavelength" xml:space="preserve">
-  <value>Beobachtete Wellenlänge:</value>
-</data>
-	<data name="RestWavelength" xml:space="preserve">
-  <value>Ruhewellenlänge:</value>
-</data>
-	<data name="ParallaxArcseconds" xml:space="preserve">
-  <value>Parallaxe (Bogensekunden):</value>
-</data>
-	<data name="Celsius" xml:space="preserve">
-  <value>Celsius:</value>
-</data>
-	<data name="MassKg" xml:space="preserve">
-  <value>Masse (kg):</value>
-</data>
-	<data name="Result" xml:space="preserve">
-  <value>Ergebnis:</value>
-</data>
-	<data name="StatusReady" xml:space="preserve">
-  <value>Status: Bereit</value>
-</data>
-
 </root>

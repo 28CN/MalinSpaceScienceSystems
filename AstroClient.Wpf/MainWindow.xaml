@@ -2,8 +2,10 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:res="clr-namespace:AstroClient.Wpf.Resources"
+        FontFamily="{DynamicResource AppFontFamily}"
+        FontSize="{DynamicResource AppFontSize}"
         Title="Astronomical Processing"
-        Height="300" Width="450"
+        Height="450" Width="600"
         Background="{DynamicResource Background}">
 
     <DockPanel>
@@ -14,7 +16,10 @@
         </StatusBar>
 
         <!-- Main layout with two columns -->
-        <Grid Background="{DynamicResource PanelBackground}">
+        <Grid x:Name="RootGrid"
+              Focusable="True"
+              MouseDown="RootGrid_MouseDown"
+              Background="{DynamicResource PanelBackground}">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <!-- Main content -->
@@ -26,52 +31,65 @@
             <TabControl Grid.Column="0" Margin="5">
                 <!-- Velocity Tab -->
                 <TabItem Header="{x:Static res:Strings.Velocity}">
-                    <StackPanel Margin="10">
+                    <Border Background="{DynamicResource PanelBackground}" Padding="10">
+                        <StackPanel Margin="10">
                         <TextBlock Text="{x:Static res:Strings.ObservedWavelength}" />
-                        <TextBox Width="120" Margin="0,0,0,8"/>
+                        <TextBox Width="120" Margin="0,0,0,8"
+                                 Text="{Binding ObservedWavelength, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"/>
                         <TextBlock Text="{x:Static res:Strings.RestWavelength}" />
-                        <TextBox Width="120" Margin="0,0,0,8"/>
+                        <TextBox Width="120" Margin="0,0,0,8"
+                                 Text="{Binding RestWavelength, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"/>
                         <Button Content="{x:Static res:Strings.Compute}" Width="140"
                                 Command="{Binding VelocityCommand}"/>
                         <TextBlock Text="{x:Static res:Strings.Result}" FontWeight="Bold" Margin="0,10,0,0"/>
                         <TextBlock FontWeight="Bold" Text="{Binding VelocityResult}"/>
                     </StackPanel>
+                    </Border>
                 </TabItem>
 
                 <!-- Distance Tab -->
                 <TabItem Header="{x:Static res:Strings.Distance}">
-                    <StackPanel Margin="10">
+                    <Border Background="{DynamicResource PanelBackground}" Padding="10">
+                        <StackPanel Margin="10">
                         <TextBlock Text="{x:Static res:Strings.ParallaxArcseconds}" />
-                        <TextBox Width="120" Margin="0,0,0,8"/>
+                        <TextBox Width="120" Margin="0,0,0,8"
+                                 Text="{Binding ParallaxArcseconds, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"/>
                         <Button Content="{x:Static res:Strings.Compute}" Width="140"
                                 Command="{Binding DistanceCommand}"/>
                         <TextBlock Text="{x:Static res:Strings.Result}" FontWeight="Bold" Margin="0,10,0,0"/>
                         <TextBlock FontWeight="Bold" Text="{Binding DistanceResult}"/>
                     </StackPanel>
+                    </Border>
                 </TabItem>
 
                 <!-- Kelvin Tab -->
                 <TabItem Header="{x:Static res:Strings.Kelvin}">
-                    <StackPanel Margin="10">
+                    <Border Background="{DynamicResource PanelBackground}" Padding="10">
+                        <StackPanel Margin="10">
                         <TextBlock Text="{x:Static res:Strings.Celsius}" />
-                        <TextBox Width="120" Margin="0,0,0,8"/>
+                        <TextBox Width="120" Margin="0,0,0,8"
+                                 Text="{Binding Celsius, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"/>
                         <Button Content="{x:Static res:Strings.Compute}" Width="140"
                                 Command="{Binding KelvinCommand}"/>
                         <TextBlock Text="{x:Static res:Strings.Result}" FontWeight="Bold" Margin="0,10,0,0"/>
                         <TextBlock FontWeight="Bold" Text="{Binding KelvinResult}"/>
                     </StackPanel>
+                    </Border>
                 </TabItem>
 
                 <!-- Event Horizon Tab -->
                 <TabItem Header="{x:Static res:Strings.EventHorizon}">
-                    <StackPanel Margin="10">
+                    <Border Background="{DynamicResource PanelBackground}" Padding="10">
+                        <StackPanel Margin="10">
                         <TextBlock Text="{x:Static res:Strings.MassKg}" />
-                        <TextBox Width="120" Margin="0,0,0,8"/>
+                        <TextBox Width="120" Margin="0,0,0,8"
+                                 Text="{Binding MassKg, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"/>
                         <Button Content="{x:Static res:Strings.Compute}" Width="140"
                                 Command="{Binding EventHorizonCommand}"/>
                         <TextBlock Text="{x:Static res:Strings.Result}" FontWeight="Bold" Margin="0,10,0,0"/>
                         <TextBlock FontWeight="Bold" Text="{Binding RadiusResult}"/>
                     </StackPanel>
+                    </Border>
                 </TabItem>
             </TabControl>
 
@@ -103,15 +121,15 @@
                           SelectedValue="{Binding SelectedFontFamily, Mode=TwoWay}"
                           SelectedValuePath="Content">
                     <ComboBoxItem Content="Segoe UI"/>
-                    <ComboBoxItem Content="Arial" IsSelected="True"/>
+                    <ComboBoxItem Content="Arial"/>
                     <ComboBoxItem Content="Consolas"/>
                     <ComboBoxItem Content="Times New Roman"/>
                 </ComboBox>
 
                 <!-- Font Size -->
                 <TextBlock Text="{x:Static res:Strings.FontSize}" FontWeight="Bold" />
-                <TextBox Width="120" Margin="0,0,0,10"
-                         Text="{Binding SelectedFontSize, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                <TextBox x:Name="FontSizeBox" Width="120" Margin="0,0,0,10"
+                         Text="{Binding SelectedFontSize, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" />
 
                 <!-- Background Color -->
                 <TextBlock Text="{x:Static res:Strings.BackgroundColor}" FontWeight="Bold" />
