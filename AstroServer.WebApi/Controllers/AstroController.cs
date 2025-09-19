@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace AstroServer.WebApi.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/v1/astro")]
     public class AstroController : ControllerBase
     {
         [HttpPost("velocity")]

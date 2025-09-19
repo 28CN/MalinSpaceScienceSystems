@@ -1,13 +1,9 @@
 ﻿using Astro.Contracts.Dtos;
 using AstroClient.Wpf.Services;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
-using System.Linq;
-using System.Net.Http;
 using System.Runtime.CompilerServices;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
