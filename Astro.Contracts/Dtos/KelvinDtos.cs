@@ -9,7 +9,7 @@ namespace Astro.Contracts.Dtos
 {
     public sealed class KelvinRequest
     {
-        [Range(-273.15, double.MaxValue)] // C >= -273.15
+        [Range(-273.15, double.MaxValue)] //must be positive
         public double Celsius { get; set; }
     }
 

@@ -42,6 +42,9 @@ namespace AstroClient.Wpf.ViewModels
         private string? _status;
         public string? StatusMessage { get => _status; set { _status = value; OnPropertyChanged(); } }
 
+        // New event specifically for language changes.
+        public event EventHandler<string>? LanguageChanged;
+
         public MainViewModel()
         {
             VelocityCommand = new RelayCommand(async () => await CalcVelocityAsync());
@@ -148,7 +151,15 @@ namespace AstroClient.Wpf.ViewModels
         public string SelectedLanguage
         {
             get => _selectedLanguage;
-            set { _selectedLanguage = value; OnPropertyChanged(); }
+            set 
+            {
+                if (_selectedLanguage == value) return;
+                _selectedLanguage = value;
+                OnPropertyChanged();
+
+                // When the language changes, invoke the new event with the new culture name.
+                LanguageChanged?.Invoke(this, _selectedLanguage);
+            }
         }
 
         private string _selectedTheme = "light";

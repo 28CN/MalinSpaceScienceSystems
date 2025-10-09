@@ -144,9 +144,6 @@
   <data name="FontSize" xml:space="preserve">
     <value>Font Size</value>
   </data>
-  <data name="BackgroundColor" xml:space="preserve">
-    <value>Background Color</value>
-  </data>
   <data name="StatusReady" xml:space="preserve">
     <value>Status: Ready</value>
   </data>
@@ -167,5 +164,8 @@
   </data>
   <data name="Celsius" xml:space="preserve">
     <value>Celsius:</value>
+  </data>
+  <data name="BackgroundColor" xml:space="preserve">
+    <value>Background Colour</value>
   </data>
 </root>

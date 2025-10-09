@@ -61,7 +61,7 @@ namespace AstroClient.Wpf.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Background Color.
+        ///   Looks up a localized string similar to Background Colour.
         /// </summary>
         public static string BackgroundColor {
             get {

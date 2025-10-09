@@ -7,8 +7,6 @@
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <!-- Default theme -->
-                <ResourceDictionary Source="Themes/Light.xaml"/>
             </ResourceDictionary.MergedDictionaries>
             <FontFamily x:Key="AppFontFamily">Segoe UI</FontFamily>
             <sys:Double x:Key="AppFontSize">12</sys:Double>

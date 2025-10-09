@@ -9,7 +9,7 @@ namespace Astro.Contracts.Dtos
 {
     public sealed class EventHorizonRequest
     {
-        [Range(double.Epsilon, double.MaxValue)] // Mass > 0
+        [Range(double.Epsilon, double.MaxValue)] //must be positive
         public double MassKg { get; set; }
     }
 
