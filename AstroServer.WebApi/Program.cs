@@ -1,3 +1,5 @@
+using AstroMath;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -6,6 +8,10 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+// Register the calculation service for dependency injection.
+builder.Services.AddScoped<IAstroMathService, AstroMathService>();
+
 
 var app = builder.Build();
 
