@@ -47,29 +47,34 @@ namespace AstroClient.Wpf.ViewModels
 
         public MainViewModel()
         {
+            // Initialize the calculation commands.
             VelocityCommand = new RelayCommand(async () => await CalcVelocityAsync());
             DistanceCommand = new RelayCommand(async () => await CalcDistanceAsync());
             KelvinCommand = new RelayCommand(async () => await CalcKelvinAsync());
             EventHorizonCommand = new RelayCommand(async () => await CalcEventHorizonAsync());
         }
 
-        private static string ToE6(double v) => v.ToString("E6", CultureInfo.InvariantCulture);
+        // format results in E6 format
+        private static string ToE6(double v) => v.ToString("E6", CultureInfo.InvariantCulture); // use invariant for consistent decimal point (".")
         private void SetOk() => StatusMessage = "OK";
         private void SetError(string msg) => StatusMessage = msg;
 
         private async Task CalcVelocityAsync()
         {
-            StatusMessage = string.Empty;
+            StatusMessage = string.Empty; //clear status message
             try
             {
                 if (ObservedWavelength is null || RestWavelength is null)
                     throw new ArgumentException("Inputs required.");
 
+                // call the api to get calculation result.
                 var value = await _api.ComputeVelocityAsync(new VelocityRequest
                 {
                     ObservedWavelength = ObservedWavelength.Value,
                     RestWavelength = RestWavelength.Value
                 });
+
+                // display
                 VelocityResult = ToE6(value);
                 SetOk();
             }
@@ -142,6 +147,7 @@ namespace AstroClient.Wpf.ViewModels
             }
         }
 
+        // to notify UI of property changes
         public event PropertyChangedEventHandler? PropertyChanged;
         private void OnPropertyChanged([CallerMemberName] string? name = null)
             => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
@@ -182,8 +188,8 @@ namespace AstroClient.Wpf.ViewModels
             get => _selectedFontSize;
             set
             {
-                var clamped = Math.Max(10, Math.Min(36, value));
-                if (Math.Abs(_selectedFontSize - clamped) < 0.1) return;
+                var clamped = Math.Max(10, Math.Min(36, value)); // set boundaries 10 - 36
+                if (Math.Abs(_selectedFontSize - clamped) < 0.1) return; // if font size not change, do nothing
                 _selectedFontSize = clamped;
                 OnPropertyChanged();
             }

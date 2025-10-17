@@ -14,7 +14,7 @@ namespace AstroClient.Wpf.Services
         private readonly HttpClient _http;
 
         // use swagger https port
-        private const string BASE = "https://localhost:7120"; // TODO: move to config file???  
+        private const string BASE = "https://localhost:7120";
         private const string API = "api/v1/astro/";  // base api path
 
         public AstroApiClient()

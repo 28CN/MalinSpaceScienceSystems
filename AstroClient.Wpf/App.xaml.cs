@@ -31,7 +31,7 @@ namespace AstroClient.Wpf
             var oldState = old.WindowState;
             var win = new MainWindow();
 
-            // copy bounds & state so window won't "jump"
+            // copy bounds & state so window won't jump
             win.WindowStartupLocation = WindowStartupLocation.Manual;   // manual positioning
             win.Left = old.Left;
             win.Top = old.Top;
@@ -42,7 +42,7 @@ namespace AstroClient.Wpf
             win.DataContext = vm;
             Current.MainWindow = win;
 
-            // if it was maximized, re-apply after Loaded to avoid sizing glitches
+            // if it was maximized, re-apply after Loaded to avoid sizing problems
             if (oldState == WindowState.Maximized)
             {
                 win.Loaded += (_, __) => win.WindowState = WindowState.Maximized;
