@@ -1,4 +1,4 @@
-﻿using AstroClient.Wpf.Models; // Use the client's Models namespace
+﻿using AstroClient.Wpf.Models;
 using AstroClient.Wpf.Services;
 using System;
 using System.ComponentModel;
@@ -11,13 +11,12 @@ namespace AstroClient.Wpf.ViewModels
 {
     public sealed class MainViewModel : INotifyPropertyChanged
     {
-        private readonly AstroApiClient _api = new AstroApiClient(); // API client instance.
+        private readonly AstroApiClient _api = new AstroApiClient();
 
-        // Input and Output Properties for UI Binding
         public double? ObservedWavelength { get; set; }
         public double? RestWavelength { get; set; }
         private string? _velocityResult;
-        public string? VelocityResult { get => _velocityResult; set { SetProperty(ref _velocityResult, value); } } 
+        public string? VelocityResult { get => _velocityResult; set { SetProperty(ref _velocityResult, value); } }
         public RelayCommand VelocityCommand { get; }
 
         public double? ParallaxArcseconds { get; set; }
@@ -35,14 +34,11 @@ namespace AstroClient.Wpf.ViewModels
         public string? RadiusResult { get => _radiusResult; set { SetProperty(ref _radiusResult, value); } }
         public RelayCommand EventHorizonCommand { get; }
 
-        // Status Message
         private string? _status;
-        public string? StatusMessage { get => _status; private set { SetProperty(ref _status, value); } } // Make setter private
+        public string? StatusMessage { get => _status; private set { SetProperty(ref _status, value); } }
 
-        // Event for language change notification.
         public event EventHandler<string>? LanguageChanged;
 
-        // Constructor initializes commands.
         public MainViewModel()
         {
             VelocityCommand = new RelayCommand(async () => await CalcVelocityAsync());
@@ -51,48 +47,40 @@ namespace AstroClient.Wpf.ViewModels
             EventHorizonCommand = new RelayCommand(async () => await CalcEventHorizonAsync());
         }
 
-        // Helper to format results to scientific notation.
         private static string ToE6(double v) => v.ToString("E6", CultureInfo.InvariantCulture);
-        // Helper to set status message to OK.
         private void SetOk() => StatusMessage = "OK";
-        // set status message to an error.
         private void SetError(string msg) => StatusMessage = msg;
-
-        // Calculation Methods
 
         private async Task CalcVelocityAsync()
         {
-            StatusMessage = string.Empty; // Clear status.
-            VelocityResult = null; // Clear previous result.
+            StatusMessage = string.Empty;
+            VelocityResult = null;
 
-            // input validation.
+            // error input handling
             if (ObservedWavelength is null || RestWavelength is null)
             { SetError("Valid number required."); return; }
             if (ObservedWavelength.Value <= 0 || RestWavelength.Value <= 0)
             { SetError("Wavelengths must be positive numbers."); return; }
 
-            // Create the request DTO.
             var request = new AstroDataTransfer
             {
-                Type = CalculationType.Velocity,
                 ObservedWavelength = ObservedWavelength.Value,
                 RestWavelength = RestWavelength.Value
             };
 
-            // Call the unified API method.
-            var response = await _api.CalculateAsync(request);
+            // Call the specific API method
+            var response = await _api.CalculateVelocityAsync(request);
 
-            // Process the response DTO.
-            if (!string.IsNullOrEmpty(response.ErrorMessage))
+            if (!response.IsSuccess)
             {
-                SetError(response.ErrorMessage); // Display error from server or API client.
+                SetError(response.ErrorMessage ?? "Unknown error");
             }
-            else if (response.VelocityMps.HasValue)
+            else if (response.Data?.VelocityMps.HasValue == true)
             {
-                VelocityResult = ToE6(response.VelocityMps.Value); // Display result.
+                VelocityResult = ToE6(response.Data.VelocityMps.Value);
                 SetOk();
             }
-            else { SetError("Invalid response received."); } // Should not happen with current server logic
+            else { SetError("Invalid response data received."); }
         }
 
         private async Task CalcDistanceAsync()
@@ -107,17 +95,17 @@ namespace AstroClient.Wpf.ViewModels
 
             var request = new AstroDataTransfer
             {
-                Type = CalculationType.Distance,
                 ParallaxArcseconds = ParallaxArcseconds.Value
             };
 
-            var response = await _api.CalculateAsync(request);
+            // Call the specific API method
+            var response = await _api.CalculateDistanceAsync(request);
 
-            if (!string.IsNullOrEmpty(response.ErrorMessage))
-            { SetError(response.ErrorMessage); }
-            else if (response.DistanceParsec.HasValue)
-            { DistanceResult = ToE6(response.DistanceParsec.Value); SetOk(); }
-            else { SetError("Invalid response received."); }
+            if (!response.IsSuccess)
+            { SetError(response.ErrorMessage ?? "Unknown error"); }
+            else if (response.Data?.DistanceParsec.HasValue == true)
+            { DistanceResult = ToE6(response.Data.DistanceParsec.Value); SetOk(); }
+            else { SetError("Invalid response data received."); }
         }
 
         private async Task CalcKelvinAsync()
@@ -132,17 +120,17 @@ namespace AstroClient.Wpf.ViewModels
 
             var request = new AstroDataTransfer
             {
-                Type = CalculationType.Kelvin,
                 Celsius = Celsius.Value
             };
 
-            var response = await _api.CalculateAsync(request);
+            // Call the specific API method
+            var response = await _api.CalculateKelvinAsync(request);
 
-            if (!string.IsNullOrEmpty(response.ErrorMessage))
-            { SetError(response.ErrorMessage); }
-            else if (response.Kelvin.HasValue)
-            { KelvinResult = ToE6(response.Kelvin.Value); SetOk(); }
-            else { SetError("Invalid response received."); }
+            if (!response.IsSuccess)
+            { SetError(response.ErrorMessage ?? "Unknown error"); }
+            else if (response.Data?.Kelvin.HasValue == true)
+            { KelvinResult = ToE6(response.Data.Kelvin.Value); SetOk(); }
+            else { SetError("Invalid response data received."); }
         }
 
         private async Task CalcEventHorizonAsync()
@@ -157,26 +145,30 @@ namespace AstroClient.Wpf.ViewModels
 
             var request = new AstroDataTransfer
             {
-                Type = CalculationType.EventHorizon,
                 MassKg = MassKg.Value
             };
 
-            var response = await _api.CalculateAsync(request);
+            // Call the specific API method
+            var response = await _api.CalculateEventHorizonAsync(request);
 
-            if (!string.IsNullOrEmpty(response.ErrorMessage))
-            { SetError(response.ErrorMessage); }
-            else if (response.RadiusMeters.HasValue)
-            { RadiusResult = ToE6(response.RadiusMeters.Value); SetOk(); }
-            else { SetError("Invalid response received."); }
+            if (!response.IsSuccess)
+            {
+                SetError(response.ErrorMessage ?? "Unknown error");
+            }
+            else if (response.Data?.RadiusMeters.HasValue == true)
+            {
+                RadiusResult = ToE6(response.Data.RadiusMeters.Value);
+                SetOk();
+            }
+            else { SetError("Invalid response data received."); }
         }
 
-        // INotifyPropertyChanged Implementation
         public event PropertyChangedEventHandler? PropertyChanged;
 
-        // setting properties
+        // set property values
         private bool SetProperty<T>(ref T field, T value, [CallerMemberName] string? propertyName = null)
         {
-            if (EqualityComparer<T>.Default.Equals(field, value)) return false; // Value hasn't changed.
+            if (EqualityComparer<T>.Default.Equals(field, value)) return false;
             field = value;
             OnPropertyChanged(propertyName);
             return true;
@@ -185,6 +177,7 @@ namespace AstroClient.Wpf.ViewModels
         private void OnPropertyChanged([CallerMemberName] string? propertyName = null)
             => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 
+        // settings properties
         private string _selectedLanguage = "en-GB";
         public string SelectedLanguage
         {
@@ -193,7 +186,7 @@ namespace AstroClient.Wpf.ViewModels
             {
                 if (SetProperty(ref _selectedLanguage, value))
                 {
-                    LanguageChanged?.Invoke(this, _selectedLanguage); // Raise event only if changed.
+                    LanguageChanged?.Invoke(this, _selectedLanguage);
                 }
             }
         }
@@ -210,8 +203,8 @@ namespace AstroClient.Wpf.ViewModels
             get => _selectedFontSize;
             set
             {
-                var clamped = Math.Max(10, Math.Min(36, value)); // Clamp value between 10 and 36.
-                SetProperty(ref _selectedFontSize, clamped); // Use SetProperty.
+                var clamped = Math.Max(10, Math.Min(36, value));
+                SetProperty(ref _selectedFontSize, clamped);
             }
         }
 

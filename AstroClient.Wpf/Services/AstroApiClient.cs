@@ -3,7 +3,7 @@ using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading;
 using System.Threading.Tasks;
-using AstroClient.Wpf.Models; // Use the client's Models namespace
+using AstroClient.Wpf.Models;
 
 namespace AstroClient.Wpf.Services
 {
@@ -12,7 +12,12 @@ namespace AstroClient.Wpf.Services
     {
         private readonly HttpClient _http;
         private const string BASE = "https://localhost:7120"; // API base URL.
-        private const string API_CALCULATE = "api/v1/astro/calculate"; // Unified API endpoint path.
+
+        // API endpoint paths.
+        private const string API_VELOCITY = "api/v1/astro/velocity";
+        private const string API_DISTANCE = "api/v1/astro/distance";
+        private const string API_KELVIN = "api/v1/astro/kelvin";
+        private const string API_EVENTHORIZON = "api/v1/astro/eventhorizon";
 
         // Constructor initializes HttpClient.
         public AstroApiClient()
@@ -21,41 +26,61 @@ namespace AstroClient.Wpf.Services
             _http.Timeout = TimeSpan.FromSeconds(60);
         }
 
-        // Unified method to call the backend /calculate endpoint.
-        public async Task<AstroDataTransfer> CalculateAsync(AstroDataTransfer request, CancellationToken ct = default)
+        // 4 public calculation methods.
+        public async Task<ApiResponse<AstroDataTransfer>> CalculateVelocityAsync(AstroDataTransfer request, CancellationToken ct = default)
+        {
+            return await PostCalculationAsync(API_VELOCITY, request, ct);
+        }
+
+        public async Task<ApiResponse<AstroDataTransfer>> CalculateDistanceAsync(AstroDataTransfer request, CancellationToken ct = default)
+        {
+            return await PostCalculationAsync(API_DISTANCE, request, ct);
+        }
+
+        public async Task<ApiResponse<AstroDataTransfer>> CalculateKelvinAsync(AstroDataTransfer request, CancellationToken ct = default)
+        {
+            return await PostCalculationAsync(API_KELVIN, request, ct);
+        }
+
+        public async Task<ApiResponse<AstroDataTransfer>> CalculateEventHorizonAsync(AstroDataTransfer request, CancellationToken ct = default)
+        {
+            return await PostCalculationAsync(API_EVENTHORIZON, request, ct);
+        }
+
+
+
+        // post calculation helper with error handling
+        private async Task<ApiResponse<AstroDataTransfer>> PostCalculationAsync(string endpoint, AstroDataTransfer request, CancellationToken ct)
         {
             try
             {
-                // Send POST request with the AstroDataTransfer object as JSON.
-                using var resp = await _http.PostAsJsonAsync(API_CALCULATE, request, ct);
+                using var resp = await _http.PostAsJsonAsync(endpoint, request, ct);
 
-                // Throw exception for HTTP error status codes (e.g., 4xx, 5xx).
-                resp.EnsureSuccessStatusCode();
-
-                // Read and deserialize the JSON response body into AstroDataTransfer.
-                var payload = await resp.Content.ReadFromJsonAsync<AstroDataTransfer>(cancellationToken: ct);
-
-                // Handle cases where the server returns an empty or invalid response.
-                if (payload == null)
+                if (!resp.IsSuccessStatusCode)
                 {
-                    return new AstroDataTransfer { Type = request.Type, ErrorMessage = "Received empty response." };
+                    string error = await resp.Content.ReadAsStringAsync(ct);
+                    return ApiResponse<AstroDataTransfer>.Fail(string.IsNullOrEmpty(error) ? resp.ReasonPhrase ?? "API Error" : error);
                 }
 
-                // Return the response DTO from the server.
-                return payload;
+                var payload = await resp.Content.ReadFromJsonAsync<AstroDataTransfer>(cancellationToken: ct);
+
+                return payload != null
+                    ? ApiResponse<AstroDataTransfer>.Success(payload)
+                    : ApiResponse<AstroDataTransfer>.Fail("Received empty response.");
             }
-            catch (HttpRequestException httpEx) // network or HTTP errors.
+            catch (Exception ex)
             {
-                return new AstroDataTransfer { Type = request.Type, ErrorMessage = $"API Error: {httpEx.Message}" };
+                return ApiResponse<AstroDataTransfer>.Fail($"Client Error: {ex.Message}");
             }
-            catch (TaskCanceledException) // timeouts or cancellation.
-            {
-                return new AstroDataTransfer { Type = request.Type, ErrorMessage = ct.IsCancellationRequested ? "Cancelled." : "Timeout." };
-            }
-            catch (Exception ex) // other errors.
-            {
-                return new AstroDataTransfer { Type = request.Type, ErrorMessage = $"Error: {ex.Message}" };
-            }
+        }
+        public class ApiResponse<T>
+        {
+            public bool IsSuccess { get; private set; }
+            public T? Data { get; private set; }
+            public string? ErrorMessage { get; private set; }
+
+            public static ApiResponse<T> Success(T data) => new ApiResponse<T> { IsSuccess = true, Data = data };
+            public static ApiResponse<T> Fail(string message) => new ApiResponse<T> { IsSuccess = false, ErrorMessage = message };
         }
     }
 }

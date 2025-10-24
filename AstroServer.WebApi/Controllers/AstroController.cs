@@ -1,99 +1,86 @@
-﻿using AstroServer.WebApi.Models; // Use the new Models namespace
+﻿using AstroServer.WebApi.Models;
 using Microsoft.AspNetCore.Mvc;
-using AstroMath; // Ensure this using exists for IAstroMathService
+using AstroMath;
 
 namespace AstroServer.WebApi.Controllers
 {
     [ApiController]
-    [Route("api/v1/astro")] // Keep the base route
+    [Route("api/v1/astro")]
     public class AstroController : ControllerBase
     {
-        private readonly IAstroMathService _astroMathService; // Injected service
+        private readonly IAstroMathService _astroMathService;
 
         public AstroController(IAstroMathService astroMathService)
         {
             _astroMathService = astroMathService;
         }
 
-        // Unified endpoint for all calculations.
-        [HttpPost("calculate")] // New route for the unified method
-        public ActionResult<AstroDataTransfer> Calculate([FromBody] AstroDataTransfer request)
+        // POST api/v1/astro/velocity
+        [HttpPost("velocity")]
+        public ActionResult<AstroDataTransfer> CalculateVelocity([FromBody] AstroDataTransfer request)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            // Prepare the response object, preserving the request type.
-            var response = new AstroDataTransfer { Type = request.Type };
-
+            var response = new AstroDataTransfer();
             try
             {
-                // Perform calculation based on the request Type.
-                switch (request.Type)
-                {
-                    case CalculationType.Velocity:
-                        // Check if required fields are provided in the request payload.
-                        if (!request.ObservedWavelength.HasValue || !request.RestWavelength.HasValue)
-                        {
-                            response.ErrorMessage = "ObservedWavelength and RestWavelength are required.";
-                        }
-                        else
-                        {
-                            // Call the calculation service.
-                            response.VelocityMps = _astroMathService.ComputeVelocity(
-                                request.ObservedWavelength.Value,
-                                request.RestWavelength.Value);
-                        }
-                        break;
+                response.VelocityMps = _astroMathService.ComputeVelocity(request.ObservedWavelength.Value,request.RestWavelength.Value);
 
-                    case CalculationType.Distance:
-                        if (!request.ParallaxArcseconds.HasValue)
-                        {
-                            response.ErrorMessage = "ParallaxArcseconds is required.";
-                        }
-                        else
-                        {
-                            response.DistanceParsec = _astroMathService.ComputeDistanceParsec(
-                                request.ParallaxArcseconds.Value);
-                        }
-                        break;
-
-                    case CalculationType.Kelvin:
-                        if (!request.Celsius.HasValue)
-                        {
-                            response.ErrorMessage = "Celsius is required.";
-                        }
-                        else
-                        {
-                            response.Kelvin = _astroMathService.ToKelvin(
-                                request.Celsius.Value);
-                        }
-                        break;
-
-                    case CalculationType.EventHorizon:
-                        if (!request.MassKg.HasValue)
-                        {
-                            response.ErrorMessage = "MassKg is required.";
-                        }
-                        else
-                        {
-                            response.RadiusMeters = _astroMathService.ComputeEventHorizon(
-                                request.MassKg.Value);
-                        }
-                        break;
-
-                    default: // Handle unknown type.
-                        response.ErrorMessage = "Invalid calculation type specified.";
-                        break;
-                }
+                return Ok(response);
             }
-            catch (Exception ex) // Catch potential errors.
+            catch (Exception ex)
             {
-                response.ErrorMessage = $"Calculation error: {ex.Message}";
+                return BadRequest($"Calculation error: {ex.Message}");
             }
+        }
 
-            return Ok(response);
+        // POST api/v1/astro/distance
+        [HttpPost("distance")]
+        public ActionResult<AstroDataTransfer> CalculateDistance([FromBody] AstroDataTransfer request)
+        {
+            var response = new AstroDataTransfer();
+            try
+            {
+                response.DistanceParsec = _astroMathService.ComputeDistanceParsec(request.ParallaxArcseconds.Value);
+
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"Calculation error: {ex.Message}");
+            }
+        }
+
+        // POST api/v1/astro/kelvin
+        [HttpPost("kelvin")]
+        public ActionResult<AstroDataTransfer> CalculateKelvin([FromBody] AstroDataTransfer request)
+        {
+            var response = new AstroDataTransfer();
+            try
+            {
+                response.Kelvin = _astroMathService.ToKelvin(request.Celsius.Value);
+
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"Calculation error: {ex.Message}");
+            }
+        }
+
+        // POST api/v1/astro/eventhorizon
+        [HttpPost("eventhorizon")]
+        public ActionResult<AstroDataTransfer> CalculateEventHorizon([FromBody] AstroDataTransfer request)
+        {
+            var response = new AstroDataTransfer();
+            try
+            {
+                response.RadiusMeters = _astroMathService.ComputeEventHorizon(request.MassKg.Value);
+
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"Calculation error: {ex.Message}");
+            }
         }
     }
 }
