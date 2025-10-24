@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
@@ -18,8 +18,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Astro.Contracts\Astro.Contracts.csproj" />
-    <ProjectReference Include="..\AstroMath\AstroMath.csproj" />
+    <Reference Include="AstroMath">
+      <HintPath>..\Libs\AstroMath.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>

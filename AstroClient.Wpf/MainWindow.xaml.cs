@@ -1,6 +1,5 @@
 ﻿using AstroClient.Wpf.ViewModels;
 using AstroClient.Wpf.Services;
-using Astro.Contracts.Dtos;
 using System.Globalization;
 using System.Text;
 using System.Windows;

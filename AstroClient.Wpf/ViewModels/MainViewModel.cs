@@ -1,4 +1,4 @@
-﻿using Astro.Contracts.Dtos;
+﻿using AstroClient.Wpf.Models;
 using AstroClient.Wpf.Services;
 using System;
 using System.ComponentModel;

@@ -1,6 +1,6 @@
-﻿using Astro.Contracts.Dtos;
-using AstroMath;
+﻿using AstroServer.WebApi.Models;
 using Microsoft.AspNetCore.Mvc;
+using AstroMath;
 
 namespace AstroServer.WebApi.Controllers
 {

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-using Astro.Contracts.Dtos;
+using AstroClient.Wpf.Models;
 using System.Net.Http.Json;
 
 namespace AstroClient.Wpf.Services
