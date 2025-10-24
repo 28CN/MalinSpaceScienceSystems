@@ -22,29 +22,7 @@ namespace AstroClient.Wpf.Services
             _http = new HttpClient { BaseAddress = new Uri(BASE) };
         }
 
-        // POST JSON and read double result (async)
-        private async Task<double> PostAndReadDoubleAsync<TRequest>(string url, TRequest request, CancellationToken ct = default)
-        {
-            using var resp = await _http.PostAsJsonAsync(url, request, ct); // async post
-            if (!resp.IsSuccessStatusCode)
-            {
-                // unify error message for VM
-                var body = await resp.Content.ReadAsStringAsync(ct);
-                var message = string.IsNullOrWhiteSpace(body)
-                    ? $"{(int)resp.StatusCode} {resp.ReasonPhrase}"
-                    : body;
-                throw new HttpRequestException(message);
-            }
-
-            // requirement: EnsureSuccessStatusCode (after custom check; harmless but explicit)
-            resp.EnsureSuccessStatusCode();
-
-            double? result = await resp.Content.ReadFromJsonAsync<double?>(cancellationToken: ct);
-            if (result is null) throw new HttpRequestException("Empty response.");
-            return result.Value; // keep as double; VM will format .ToString("E6")
-        }
-
-        // async 
+        // posts request and return calculated results.
         public async Task<double> ComputeVelocityAsync(VelocityRequest request, CancellationToken ct = default)
         {
             using var resp = await _http.PostAsJsonAsync(API + "velocity", request, ct);

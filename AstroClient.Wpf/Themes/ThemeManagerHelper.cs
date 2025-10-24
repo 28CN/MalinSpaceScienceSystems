@@ -3,9 +3,7 @@ using System.Windows;
 
 namespace AstroClient.Wpf.Themes
 {
-    /// <summary>
-    /// Manages dynamic theme switching in XAML through an attached property.
-    /// </summary>
+    // Manages dynamic theme switching in XAML through an attached property.
     public static class ThemeManager
     {
         public static readonly DependencyProperty ThemeNameProperty =

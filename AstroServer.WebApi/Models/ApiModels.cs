@@ -26,7 +26,7 @@ namespace AstroServer.WebApi.Models
         public double DistanceParsec { get; set; }
     }
 
-    // KelvinDtos.cs
+    // KelvinDtos
     public sealed class KelvinRequest
     {
         [Range(-273.15, double.MaxValue)]
@@ -37,7 +37,7 @@ namespace AstroServer.WebApi.Models
         public double Kelvin { get; set; }
     }
 
-    // EventHorizonDtos.cs
+    // EventHorizonDtos
     public sealed class EventHorizonRequest
     {
         [Range(double.Epsilon, double.MaxValue)]

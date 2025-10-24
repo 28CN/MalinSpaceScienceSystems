@@ -6,9 +6,7 @@ namespace AstroClient.Wpf.Models
     // VelocityDtos
     public sealed class VelocityRequest
     {
-        [Range(double.Epsilon, double.MaxValue)]
         public double ObservedWavelength { get; set; }
-        [Range(double.Epsilon, double.MaxValue)]
         public double RestWavelength { get; set; }
     }
     public sealed class VelocityResponse
@@ -19,7 +17,6 @@ namespace AstroClient.Wpf.Models
     // DistanceDtos
     public sealed class DistanceRequest
     {
-        [Range(double.Epsilon, double.MaxValue)]
         public double ParallaxArcseconds { get; set; }
     }
     public sealed class DistanceResponse
@@ -27,10 +24,9 @@ namespace AstroClient.Wpf.Models
         public double DistanceParsec { get; set; }
     }
 
-    // KelvinDtos.cs
+    // KelvinDtos
     public sealed class KelvinRequest
     {
-        [Range(-273.15, double.MaxValue)]
         public double Celsius { get; set; }
     }
     public sealed class KelvinResponse
@@ -38,10 +34,9 @@ namespace AstroClient.Wpf.Models
         public double Kelvin { get; set; }
     }
 
-    // EventHorizonDtos.cs
+    // EventHorizonDtos
     public sealed class EventHorizonRequest
     {
-        [Range(double.Epsilon, double.MaxValue)]
         public double MassKg { get; set; }
     }
     public sealed class EventHorizonResponse
