@@ -65,7 +65,10 @@ namespace AstroClient.Wpf.ViewModels
             try
             {
                 if (ObservedWavelength is null || RestWavelength is null)
-                    throw new ArgumentException("Inputs required.");
+                    throw new ArgumentException("Valid number required.");
+
+                if (ObservedWavelength.Value <= 0 || RestWavelength.Value <= 0)
+                    throw new ArgumentException("Wavelengths must be positive numbers.");
 
                 // call the api to get calculation result.
                 var value = await _api.ComputeVelocityAsync(new VelocityRequest
@@ -80,6 +83,7 @@ namespace AstroClient.Wpf.ViewModels
             }
             catch (Exception ex)
             {
+                VelocityResult = null;
                 SetError(ex.Message);
             }
         }
@@ -90,7 +94,10 @@ namespace AstroClient.Wpf.ViewModels
             try
             {
                 if (ParallaxArcseconds is null)
-                    throw new ArgumentException("Input required.");
+                    throw new ArgumentException("Valid number required.");
+
+                if (ParallaxArcseconds.Value <= 0)
+                    throw new ArgumentException("Parallax must be a positive number.");
 
                 var value = await _api.ComputeDistanceAsync(new DistanceRequest
                 {
@@ -101,6 +108,7 @@ namespace AstroClient.Wpf.ViewModels
             }
             catch (Exception ex)
             {
+                DistanceResult = null;
                 SetError(ex.Message);
             }
         }
@@ -111,7 +119,10 @@ namespace AstroClient.Wpf.ViewModels
             try
             {
                 if (Celsius is null)
-                    throw new ArgumentException("Input required.");
+                    throw new ArgumentException("Valid number required.");
+
+                if (Celsius.Value < -273.15d)
+                    throw new ArgumentException("Celsius must be >= -273.15.");
 
                 var value = await _api.ComputeKelvinAsync(new KelvinRequest
                 {
@@ -122,6 +133,7 @@ namespace AstroClient.Wpf.ViewModels
             }
             catch (Exception ex)
             {
+                KelvinResult = null;
                 SetError(ex.Message);
             }
         }
@@ -132,7 +144,10 @@ namespace AstroClient.Wpf.ViewModels
             try
             {
                 if (MassKg is null)
-                    throw new ArgumentException("Input required.");
+                    throw new ArgumentException("Valid number required.");
+
+                if (MassKg.Value <= 0)
+                    throw new ArgumentException("Mass must be a positive number.");
 
                 var value = await _api.ComputeEventHorizonRadiusAsync(new EventHorizonRequest
                 {
@@ -143,6 +158,7 @@ namespace AstroClient.Wpf.ViewModels
             }
             catch (Exception ex)
             {
+                RadiusResult = null;
                 SetError(ex.Message);
             }
         }
