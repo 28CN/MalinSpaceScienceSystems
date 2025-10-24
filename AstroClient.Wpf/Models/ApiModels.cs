@@ -1,46 +1,37 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿// Note: Removed System.ComponentModel.DataAnnotations as [Range] is not used here.
 
-namespace AstroClient.Wpf.Models
+namespace AstroClient.Wpf.Models // Use the client's Models namespace
 {
-
-    // VelocityDtos
-    public sealed class VelocityRequest
+    public enum CalculationType
     {
-        public double ObservedWavelength { get; set; }
-        public double RestWavelength { get; set; }
-    }
-    public sealed class VelocityResponse
-    {
-        public double VelocityMps { get; set; }
+        Unknown,
+        Velocity,
+        Distance,
+        Kelvin,
+        EventHorizon
     }
 
-    // DistanceDtos
-    public sealed class DistanceRequest
+    public class AstroDataTransfer
     {
-        public double ParallaxArcseconds { get; set; }
-    }
-    public sealed class DistanceResponse
-    {
-        public double DistanceParsec { get; set; }
-    }
+        public CalculationType Type { get; set; } = CalculationType.Unknown;
 
-    // KelvinDtos
-    public sealed class KelvinRequest
-    {
-        public double Celsius { get; set; }
-    }
-    public sealed class KelvinResponse
-    {
-        public double Kelvin { get; set; }
-    }
+        public double? ObservedWavelength { get; set; }
 
-    // EventHorizonDtos
-    public sealed class EventHorizonRequest
-    {
-        public double MassKg { get; set; }
-    }
-    public sealed class EventHorizonResponse
-    {
-        public double RadiusMeters { get; set; }
+        public double? RestWavelength { get; set; }
+
+        public double? ParallaxArcseconds { get; set; }
+
+        public double? Celsius { get; set; }
+
+        public double? MassKg { get; set; }
+
+        // possible Output Fields
+        public double? VelocityMps { get; set; }
+        public double? DistanceParsec { get; set; }
+        public double? Kelvin { get; set; }
+        public double? RadiusMeters { get; set; }
+
+        // Error Message
+        public string? ErrorMessage { get; set; }
     }
 }

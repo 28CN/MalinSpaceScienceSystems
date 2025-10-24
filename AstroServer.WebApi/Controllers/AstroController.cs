@@ -1,60 +1,99 @@
-﻿using AstroServer.WebApi.Models;
+﻿using AstroServer.WebApi.Models; // Use the new Models namespace
 using Microsoft.AspNetCore.Mvc;
-using AstroMath;
+using AstroMath; // Ensure this using exists for IAstroMathService
 
 namespace AstroServer.WebApi.Controllers
 {
     [ApiController]
-    [Route("api/v1/astro")]
+    [Route("api/v1/astro")] // Keep the base route
     public class AstroController : ControllerBase
     {
-        private readonly IAstroMathService _astroMathService;
+        private readonly IAstroMathService _astroMathService; // Injected service
 
-        // Initialises the controller with the injected calculation service.
         public AstroController(IAstroMathService astroMathService)
         {
             _astroMathService = astroMathService;
         }
 
-        [HttpPost("velocity")]
-        public ActionResult<VelocityResponse> Velocity([FromBody] VelocityRequest req)
+        // Unified endpoint for all calculations.
+        [HttpPost("calculate")] // New route for the unified method
+        public ActionResult<AstroDataTransfer> Calculate([FromBody] AstroDataTransfer request)
         {
-            //if (req == null) return BadRequest("Invalid body."); no need anymore, coulb be managed by apicontroller
-            if (req.RestWavelength <= 0 || req.ObservedWavelength <= 0)
-                return BadRequest("Wavelengths must be positive.");
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
 
-            double v = _astroMathService.ComputeVelocity(req.ObservedWavelength, req.RestWavelength);
-            return Ok(new VelocityResponse { VelocityMps = v });
-        }
+            // Prepare the response object, preserving the request type.
+            var response = new AstroDataTransfer { Type = request.Type };
 
-        [HttpPost("distance")]
-        public ActionResult<DistanceResponse> Distance([FromBody] DistanceRequest req)
-        {
-            if (req.ParallaxArcseconds <= 0)
-                return BadRequest("Parallax must be positive.");
+            try
+            {
+                // Perform calculation based on the request Type.
+                switch (request.Type)
+                {
+                    case CalculationType.Velocity:
+                        // Check if required fields are provided in the request payload.
+                        if (!request.ObservedWavelength.HasValue || !request.RestWavelength.HasValue)
+                        {
+                            response.ErrorMessage = "ObservedWavelength and RestWavelength are required.";
+                        }
+                        else
+                        {
+                            // Call the calculation service.
+                            response.VelocityMps = _astroMathService.ComputeVelocity(
+                                request.ObservedWavelength.Value,
+                                request.RestWavelength.Value);
+                        }
+                        break;
 
-            double d = _astroMathService.ComputeDistanceParsec(req.ParallaxArcseconds);
-            return Ok(new DistanceResponse { DistanceParsec = d });
-        }
+                    case CalculationType.Distance:
+                        if (!request.ParallaxArcseconds.HasValue)
+                        {
+                            response.ErrorMessage = "ParallaxArcseconds is required.";
+                        }
+                        else
+                        {
+                            response.DistanceParsec = _astroMathService.ComputeDistanceParsec(
+                                request.ParallaxArcseconds.Value);
+                        }
+                        break;
 
-        [HttpPost("kelvin")]
-        public ActionResult<KelvinResponse> Kelvin([FromBody] KelvinRequest req)
-        {
-            if (req.Celsius < -273.15d)
-                return BadRequest("Celsius must be >= -273.15.");
+                    case CalculationType.Kelvin:
+                        if (!request.Celsius.HasValue)
+                        {
+                            response.ErrorMessage = "Celsius is required.";
+                        }
+                        else
+                        {
+                            response.Kelvin = _astroMathService.ToKelvin(
+                                request.Celsius.Value);
+                        }
+                        break;
 
-            double k = _astroMathService.ToKelvin(req.Celsius);
-            return Ok(new KelvinResponse { Kelvin = k });
-        }
+                    case CalculationType.EventHorizon:
+                        if (!request.MassKg.HasValue)
+                        {
+                            response.ErrorMessage = "MassKg is required.";
+                        }
+                        else
+                        {
+                            response.RadiusMeters = _astroMathService.ComputeEventHorizon(
+                                request.MassKg.Value);
+                        }
+                        break;
 
-        [HttpPost("event-horizon")]
-        public ActionResult<EventHorizonResponse> EventHorizon([FromBody] EventHorizonRequest req)
-        {
-            if (req.MassKg <= 0)
-                return BadRequest("Mass must be posotive.");
+                    default: // Handle unknown type.
+                        response.ErrorMessage = "Invalid calculation type specified.";
+                        break;
+                }
+            }
+            catch (Exception ex) // Catch potential errors.
+            {
+                response.ErrorMessage = $"Calculation error: {ex.Message}";
+            }
 
-            double r = _astroMathService.ComputeEventHorizon(req.MassKg);
-            return Ok(new EventHorizonResponse { RadiusMeters = r });
+            return Ok(response);
         }
     }
 }

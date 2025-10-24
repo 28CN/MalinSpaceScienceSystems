@@ -17,7 +17,6 @@ namespace AstroClient.Wpf.ViewModels
             _action = action;
             _can = can;
         }
-
         public bool CanExecute(object? parameter) => _can?.Invoke() ?? true;
         public void Execute(object? parameter) => _action();
         public event EventHandler? CanExecuteChanged;
