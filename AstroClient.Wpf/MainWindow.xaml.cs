@@ -15,16 +15,13 @@ using System.Windows.Shapes;
 
 namespace AstroClient.Wpf
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
     public partial class MainWindow : Window
     {
         private readonly MainViewModel vm;
         public MainWindow()
         {
             InitializeComponent();
-            vm = new MainViewModel();
+            vm = new MainViewModel(); //create the ViewModel
             DataContext = vm;
 
             vm.LanguageChanged += (sender, cultureName) => App.SetCulture(cultureName);

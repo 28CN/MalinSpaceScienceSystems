@@ -12,42 +12,55 @@ namespace AstroClient.Wpf.ViewModels
     {
         private readonly AstroApiClient _api = new AstroApiClient();
 
+        #region calculation inputs and results
+        // Velocity calculation
         public double? ObservedWavelength { get; set; }
         public double? RestWavelength { get; set; }
         private string? _velocityResult;
         public string? VelocityResult { get => _velocityResult; set { SetProperty(ref _velocityResult, value); } }
 
+        // Distance calculation
         public double? ParallaxArcseconds { get; set; }
         private string? _distanceResult;
         public string? DistanceResult { get => _distanceResult; set { SetProperty(ref _distanceResult, value); } }
 
+        // Kelvin calculation
         public double? Celsius { get; set; }
         private string? _kelvinResult;
         public string? KelvinResult { get => _kelvinResult; set { SetProperty(ref _kelvinResult, value); } }
 
+        // Event Horizon calculation
         public double? MassKg { get; set; }
         private string? _radiusResult;
         public string? RadiusResult { get => _radiusResult; set { SetProperty(ref _radiusResult, value); } }
+        #endregion
 
+        // UI state and settings
         private string? _status;
-        public string? StatusMessage { get => _status; private set { SetProperty(ref _status, value); } }
+        public string? StatusMessage { get => _status; private set { SetProperty(ref _status, value); } } //stage bar text
 
-        public event EventHandler<string>? LanguageChanged;
+        public event EventHandler<string>? LanguageChanged; 
 
         public MainViewModel()
         {
         }
 
-        private static string ToE6(double v) => v.ToString("E6", CultureInfo.InvariantCulture);
+
+
+        // status message helpers
         private void SetOk() => StatusMessage = "OK";
         private void SetError(string msg) => StatusMessage = msg;
 
+        // Formats results
+        private static string ToE6(double v) => v.ToString("E6", CultureInfo.InvariantCulture);
+
+        // Validates user input, calls the API, updates the property
         public async Task CalcVelocityAsync()
         {
             StatusMessage = string.Empty;
             VelocityResult = null;
 
-            // error input handling
+            // Error input handling
             if (ObservedWavelength is null || RestWavelength is null)
             { SetError("Valid number required."); return; }
             if (ObservedWavelength.Value <= 0 || RestWavelength.Value <= 0)

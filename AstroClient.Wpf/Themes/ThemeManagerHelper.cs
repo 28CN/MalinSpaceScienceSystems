@@ -32,7 +32,6 @@ namespace AstroClient.Wpf.Themes
                 var dictionaries = element.Resources.MergedDictionaries;
 
                 // To prevent resource conflicts, clear any previously loaded theme dictionary.
-                // This logic assumes the theme dictionary is always the first one in the collection.
                 if (dictionaries.Count > 0)
                 {
                     dictionaries.RemoveAt(0);
@@ -49,7 +48,7 @@ namespace AstroClient.Wpf.Themes
                 }
                 catch (Exception)
                 {
-                    // Fallback to a default theme if something goes wrong (e.g., file not found).
+                    // Fallback to a default theme if something goes wrong (like file not found error).
                     var fallbackDict = new ResourceDictionary
                     {
                         Source = new Uri("Themes/Light.xaml", UriKind.Relative)

@@ -75,10 +75,11 @@ namespace AstroClient.Wpf.Services
         }
         public class ApiResponse<T>
         {
-            public bool IsSuccess { get; private set; }
-            public T? Data { get; private set; }
+            public bool IsSuccess { get; private set; } // True if successful
+            public T? Data { get; private set; } // The data returned from the API
             public string? ErrorMessage { get; private set; }
 
+            // Factory methods for success and failure responses
             public static ApiResponse<T> Success(T data) => new ApiResponse<T> { IsSuccess = true, Data = data };
             public static ApiResponse<T> Fail(string message) => new ApiResponse<T> { IsSuccess = false, ErrorMessage = message };
         }
