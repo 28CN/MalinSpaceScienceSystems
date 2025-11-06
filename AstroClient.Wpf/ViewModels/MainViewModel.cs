@@ -5,7 +5,6 @@ using System.ComponentModel;
 using System.Globalization;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
-using System.Windows.Input;
 
 namespace AstroClient.Wpf.ViewModels
 {
@@ -17,22 +16,18 @@ namespace AstroClient.Wpf.ViewModels
         public double? RestWavelength { get; set; }
         private string? _velocityResult;
         public string? VelocityResult { get => _velocityResult; set { SetProperty(ref _velocityResult, value); } }
-        public RelayCommand VelocityCommand { get; }
 
         public double? ParallaxArcseconds { get; set; }
         private string? _distanceResult;
         public string? DistanceResult { get => _distanceResult; set { SetProperty(ref _distanceResult, value); } }
-        public RelayCommand DistanceCommand { get; }
 
         public double? Celsius { get; set; }
         private string? _kelvinResult;
         public string? KelvinResult { get => _kelvinResult; set { SetProperty(ref _kelvinResult, value); } }
-        public RelayCommand KelvinCommand { get; }
 
         public double? MassKg { get; set; }
         private string? _radiusResult;
         public string? RadiusResult { get => _radiusResult; set { SetProperty(ref _radiusResult, value); } }
-        public RelayCommand EventHorizonCommand { get; }
 
         private string? _status;
         public string? StatusMessage { get => _status; private set { SetProperty(ref _status, value); } }
@@ -41,17 +36,13 @@ namespace AstroClient.Wpf.ViewModels
 
         public MainViewModel()
         {
-            VelocityCommand = new RelayCommand(async () => await CalcVelocityAsync());
-            DistanceCommand = new RelayCommand(async () => await CalcDistanceAsync());
-            KelvinCommand = new RelayCommand(async () => await CalcKelvinAsync());
-            EventHorizonCommand = new RelayCommand(async () => await CalcEventHorizonAsync());
         }
 
         private static string ToE6(double v) => v.ToString("E6", CultureInfo.InvariantCulture);
         private void SetOk() => StatusMessage = "OK";
         private void SetError(string msg) => StatusMessage = msg;
 
-        private async Task CalcVelocityAsync()
+        public async Task CalcVelocityAsync()
         {
             StatusMessage = string.Empty;
             VelocityResult = null;
@@ -83,7 +74,7 @@ namespace AstroClient.Wpf.ViewModels
             else { SetError("Invalid response data received."); }
         }
 
-        private async Task CalcDistanceAsync()
+        public async Task CalcDistanceAsync()
         {
             StatusMessage = string.Empty;
             DistanceResult = null;
@@ -108,7 +99,7 @@ namespace AstroClient.Wpf.ViewModels
             else { SetError("Invalid response data received."); }
         }
 
-        private async Task CalcKelvinAsync()
+        public async Task CalcKelvinAsync()
         {
             StatusMessage = string.Empty;
             KelvinResult = null;
@@ -133,7 +124,7 @@ namespace AstroClient.Wpf.ViewModels
             else { SetError("Invalid response data received."); }
         }
 
-        private async Task CalcEventHorizonAsync()
+        public async Task CalcEventHorizonAsync()
         {
             StatusMessage = string.Empty;
             RadiusResult = null;
@@ -177,7 +168,7 @@ namespace AstroClient.Wpf.ViewModels
         private void OnPropertyChanged([CallerMemberName] string? propertyName = null)
             => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 
-        // settings properties
+        #region settings properties
         private string _selectedLanguage = "en-GB";
         public string SelectedLanguage
         {
@@ -210,5 +201,7 @@ namespace AstroClient.Wpf.ViewModels
 
         private string _selectedBackgroundColor = "Default";
         public string SelectedBackgroundColor { get => _selectedBackgroundColor; set { SetProperty(ref _selectedBackgroundColor, value); } }
+
+        #endregion
     }
 }

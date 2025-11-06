@@ -15,7 +15,7 @@ namespace AstroServer.WebApi.Models
 
         public double? MassKg { get; set; }
 
-        // Output Fields
+
         public double? VelocityMps { get; set; }
         public double? DistanceParsec { get; set; }
         public double? Kelvin { get; set; }

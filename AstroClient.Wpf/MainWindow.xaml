@@ -60,7 +60,7 @@
                             <TextBox Width="120" Margin="0,0,0,8"
                                  Text="{Binding RestWavelength, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"/>
                             <Button Content="{x:Static res:Strings.Compute}" Width="140"
-                                Command="{Binding VelocityCommand}"/>
+                                Click="VelocityButton_Click"/>
                             <TextBlock Text="{x:Static res:Strings.Result}" FontWeight="Bold" Margin="0,10,0,0"/>
                             <TextBlock FontWeight="Bold" Text="{Binding VelocityResult}"/>
                         </StackPanel>
@@ -75,7 +75,7 @@
                             <TextBox Width="120" Margin="0,0,0,8"
                                  Text="{Binding ParallaxArcseconds, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"/>
                             <Button Content="{x:Static res:Strings.Compute}" Width="140"
-                                Command="{Binding DistanceCommand}"/>
+                                Click="DistanceButton_Click"/>
                             <TextBlock Text="{x:Static res:Strings.Result}" FontWeight="Bold" Margin="0,10,0,0"/>
                             <TextBlock FontWeight="Bold" Text="{Binding DistanceResult}"/>
                         </StackPanel>
@@ -90,7 +90,7 @@
                             <TextBox Width="120" Margin="0,0,0,8"
                                  Text="{Binding Celsius, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"/>
                             <Button Content="{x:Static res:Strings.Compute}" Width="140"
-                                Command="{Binding KelvinCommand}"/>
+                                Click="KelvinButton_Click"/>
                             <TextBlock Text="{x:Static res:Strings.Result}" FontWeight="Bold" Margin="0,10,0,0"/>
                             <TextBlock FontWeight="Bold" Text="{Binding KelvinResult}"/>
                         </StackPanel>
@@ -105,7 +105,7 @@
                             <TextBox Width="120" Margin="0,0,0,8"
                                  Text="{Binding MassKg, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"/>
                             <Button Content="{x:Static res:Strings.Compute}" Width="140"
-                                Command="{Binding EventHorizonCommand}"/>
+                                Click="EventHorizonButton_Click"/>
                             <TextBlock Text="{x:Static res:Strings.Result}" FontWeight="Bold" Margin="0,10,0,0"/>
                             <TextBlock FontWeight="Bold" Text="{Binding RadiusResult}"/>
                         </StackPanel>

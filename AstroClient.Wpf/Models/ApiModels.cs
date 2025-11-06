@@ -12,7 +12,7 @@
 
         public double? MassKg { get; set; }
 
-        // possible Output Fields
+
         public double? VelocityMps { get; set; }
         public double? DistanceParsec { get; set; }
         public double? Kelvin { get; set; }
